@@ -5,14 +5,15 @@ Maintainer:             dramforever <dramforever@live.com>
 License:                BSD3
 License-File:           LICENSE
 Category:               Data Structures
-Synopsis:               Generic splay-tree structure with example instances
-
+Synopsis:               (UNTESTED) Generic splay-based sequence representation
 Description:
-                        A general sequence representations with arbitary
-                        annotations, for use as a base for implementations
-                        of various collection types
+                        /WARNING/: This package is /untested/ and /unstable/,
+                        do not use except for testing.
 
-Description:            
+                        A general sequence representation with arbitary
+                        annotations, for use as a base for implementations
+                        of various collection types.
+
 Cabal-Version:          >= 1.10
 Build-Type:             Simple
 
