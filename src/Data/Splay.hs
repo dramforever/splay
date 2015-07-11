@@ -172,6 +172,5 @@ traverseSplay :: (Measured sa a, Measured sb b, Applicative f)
                  => (a -> f b)
                  -> Splay sa a -> f (Splay sb b)
 traverseSplay _ Leaf = pure Leaf
-traverseSplay f (Branch _ x tl tr) = branch <$> f x
-                                            <*> traverseSplay f tl
-                                            <*> traverseSplay f tr
+traverseSplay f (Branch _ x tl tr) =
+  (\l m r -> branch m l r) <$> traverseSplay f tl <*> f x <*> traverseSplay f tr
