@@ -13,6 +13,9 @@ Description:
                         A general sequence representation with arbitary
                         annotations, for use as a base for implementations
                         of various collection types.
+                        .
+                        Some parts of the documentation are based on those
+                        in the @containers@ and @fingertree@ package.
 
 Cabal-Version:          >= 1.10
 Build-Type:             Simple
