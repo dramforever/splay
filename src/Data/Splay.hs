@@ -27,6 +27,7 @@ module Data.Splay
        , split
        ) where
 
+import Control.Applicative
 import Data.Monoid ((<>))
 
 import Data.Splay.Internal
@@ -151,3 +152,17 @@ split f t | not (f mempty || f (measure t)) = (t, Leaf)
 split f t = case findAndSplay f t of
   Branch _ x tl tr -> (tl, branch x Leaf tr)
   Leaf -> error "splay: internal error"
+
+-- | Traverse the sequence
+--
+--   @
+--   traverseSplay :: (Measured sa a, Measured sb b)
+--                 => Traversal a b (Splay sa a) (Splay sb b)
+--   @
+traverseSplay :: (Measured sa a, Measured sb b, Applicative f)
+                 => (a -> f b)
+                 -> Splay sa a -> f (Splay sb b)
+traverseSplay _ Leaf = pure Leaf
+traverseSplay f (Branch _ x tl tr) = branch <$> f x
+                                            <*> traverseSplay f tl
+                                            <*> traverseSplay f tr
