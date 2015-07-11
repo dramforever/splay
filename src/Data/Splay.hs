@@ -30,7 +30,7 @@ module Data.Splay
        ) where
 
 import Control.Applicative
-import Data.Monoid ((<>))
+import Data.Monoid
 import Prelude
 
 -- | A representation of a sequence of values of type @a@ using a splay

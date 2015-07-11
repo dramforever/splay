@@ -27,12 +27,11 @@ module Data.Splay.Sequence
        ) where
 
 import Control.Applicative
-import Data.Coerce
 import Data.Foldable hiding (null, length)
 import Data.Function
 import Data.Monoid
 import Data.Traversable
-import Prelude hiding (null, length, splitAt)
+import Prelude hiding (null, length, splitAt, foldr)
 
 import qualified Data.Splay as S
 
@@ -58,10 +57,8 @@ instance Traversable Seq where
   traverse f (Seq x) = Seq <$> S.traverseSplay (fmap Item . f . getItem) x
 
 instance Monoid (Seq a) where
-  mempty = coerce (mempty :: S.Splay Size (Item a))
-  mappend = coerce (mappend :: S.Splay Size (Item a)
-                               -> S.Splay Size (Item a)
-                               -> S.Splay Size (Item a))
+  mempty = Seq mempty
+  Seq a `mappend` Seq b = Seq $ a <> b
 
 instance Eq a => Eq (Seq a) where
   (==) = (==) `on` toList
@@ -76,7 +73,7 @@ instance Show a => Show (Seq a) where
 
 -- | Construct a sequence of only one element
 singleton :: a -> Seq a
-singleton = coerce S.singleton
+singleton = Seq . S.singleton . Item
 
 -- | Add an element to the left end of a sequence
 (<|) :: a -> Seq a -> Seq a
@@ -105,4 +102,4 @@ length = getSize . S.measure . getSeq
 -- | @'splitAt' n s@ splits @s@ into the first @n@ elements and the rest.
 --   If @n@ is less than the length of @s@, @(s, mempty)@ will be returned
 splitAt :: Int -> Seq a -> (Seq a, Seq a)
-splitAt n (Seq s) = coerce $ S.split (> Size n) s
+splitAt n (Seq s) = case S.split (> Size n) s of (a, b) -> (Seq a, Seq b)
