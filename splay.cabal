@@ -5,10 +5,10 @@ Maintainer:             dramforever <dramforever@live.com>
 License:                BSD3
 License-File:           LICENSE
 Category:               Data Structures
-Synopsis:               (UNTESTED) Generic splay-based sequence representation
+Synopsis:               Generic splay-based sequence representation
 Description:
-                        /WARNING/: This package is /untested/ and /unstable/,
-                        do not use except for testing.
+                        /WARNING/: This package is /unstable/, do not use
+                        except for testing.
 
                         A general sequence representation with arbitary
                         annotations, for use as a base for implementations
