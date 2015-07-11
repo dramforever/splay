@@ -14,6 +14,9 @@ Description:
                         annotations, for use as a base for implementations
                         of various collection types.
                         .
+                        The splay operation in this package is implemented
+                        using a top-down approach.
+                        .
                         Some parts of the documentation are based on those
                         in the @containers@ and @fingertree@ package.
 
