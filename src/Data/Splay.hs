@@ -18,7 +18,7 @@
 -----------------------------------------------------------------------------
 
 module Data.Splay
-       ( Splay()
+       ( Splay
        , Measured(..)
        , singleton
        , split
