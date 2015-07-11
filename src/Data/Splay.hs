@@ -15,6 +15,9 @@
 --
 -- A generic sequence representation with arbitary annotations, for use
 -- as a base for implementations of various collection types
+--
+-- The empty sequence and the concatenation operation are available in
+-- the @'Monoid'@ instance of @'Splay'@
 -----------------------------------------------------------------------------
 
 module Data.Splay
@@ -22,7 +25,6 @@ module Data.Splay
        , Measured(..)
        , singleton
        , split
-       , (><)
        ) where
 
 import Data.Monoid ((<>))
@@ -37,6 +39,27 @@ class Monoid s => Measured s a | a -> s where
 instance Measured s a => Measured s (Splay s a) where
   measure Leaf = mempty
   measure (Branch s _ _ _) = s
+
+-- | @'mappend'@ concatenates two sequences, and @'mempty'@ is the empty
+--   sequence.
+instance Measured s a => Monoid (Splay s a) where
+  mappend :: Measured s a => Splay s a -> Splay s a -> Splay s a
+  Leaf `mappend` b = b
+  a `mappend` Leaf = a
+  a `mappend` b = case splayRightmost a of
+    Branch _ x tl Leaf -> branch x tl b
+    _ -> error "splay: internal error"
+
+  mempty = Leaf
+
+splayRightmost :: Measured s a => Splay s a -> Splay s a
+splayRightmost t = go id t
+  where go lf Leaf = lf Leaf
+        go lf (Branch _ x tl Leaf) = branch x (lf tl) Leaf
+        go lf (Branch _ x tl (Branch _ xr trl Leaf)) =
+          branch xr (lf $ branch x tl trl) Leaf
+        go lf (Branch _ x tl (Branch _ xr trl trr)) =
+          go (\hole -> lf $ branch xr (branch x tl trl) hole) trr
 
 -- | Smart constructor for making a branching node that generates
 --   a cached measurement.
@@ -128,20 +151,3 @@ split f t | not (f mempty || f (measure t)) = (t, Leaf)
 split f t = case findAndSplay f t of
   Branch _ x tl tr -> (tl, branch x Leaf tr)
   Leaf -> error "splay: internal error"
-
-splayRightmost :: Measured s a => Splay s a -> Splay s a
-splayRightmost t = go id t
-  where go lf Leaf = lf Leaf
-        go lf (Branch _ x tl Leaf) = branch x (lf tl) Leaf
-        go lf (Branch _ x tl (Branch _ xr trl Leaf)) =
-          branch xr (lf $ branch x tl trl) Leaf
-        go lf (Branch _ x tl (Branch _ xr trl trr)) =
-          go (\hole -> lf $ branch xr (branch x tl trl) hole) trr
-
--- | Concatenate two sequences
-(><) :: Measured s a => Splay s a -> Splay s a -> Splay s a
-Leaf >< b = b
-a >< Leaf = a
-a >< b = case splayRightmost a of
-  Branch _ x tl Leaf -> branch x tl b
-  _ -> error "splay: internal error"
