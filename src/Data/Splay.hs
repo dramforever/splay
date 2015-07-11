@@ -2,6 +2,7 @@
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE RoleAnnotations #-}
 {-# OPTIONS_GHC -Wall #-}
 
 -----------------------------------------------------------------------------
@@ -38,6 +39,8 @@ data Splay s a
   = Leaf
   | Branch !s a (Splay s a) (Splay s a)
     -- ^ Invariant: @'s'@ is a valid cached measurement
+
+type role Splay nominal nominal
 
 -- | @s@ is a measurement of @a@
 class Monoid s => Measured s a | a -> s where
