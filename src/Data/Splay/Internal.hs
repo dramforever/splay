@@ -1,3 +1,16 @@
+
+-----------------------------------------------------------------------------
+-- |
+-- Module      :  Data.Splay.Internal
+-- Copyright   :  (c) dramforever 2015
+-- License     :  BSD3
+-- Maintainer  :  dramforever
+-- Stability   :  unstable
+-- Portability :  non-portable (GHC extensions)
+--
+-- Internal module containing the definition of the @'Splay'@ type.
+-----------------------------------------------------------------------------
+
 module Data.Splay.Internal
     ( Splay(..) ) where
 
@@ -6,3 +19,4 @@ module Data.Splay.Internal
 data Splay s a
   = Leaf
   | Branch !s a (Splay s a) (Splay s a)
+    -- ^ Invariant: @'s'@ is a valid cached measurement
