@@ -9,7 +9,7 @@ Synopsis:               Generic splay-based sequence representation
 Description:
                         /WARNING/: This package is /unstable/, do not use
                         except for testing.
-
+                        .
                         A general sequence representation with arbitary
                         annotations, for use as a base for implementations
                         of various collection types.
