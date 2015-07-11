@@ -99,50 +99,37 @@ findAndSplay f t = go (mempty :: s) id id t
           branch x (lf tl) (rf tr)
 
     -- Zig left
-    go pre lf rf (Branch _ x
-                  (Branch _ xl tll tlr) tr)
-      
+    go pre lf rf (Branch _ x (Branch _ xl tll tlr) tr)
       | not (f $ pre <> ms tll) && f (pre <> ms tll <> ms xl) =
           branch xl (lf tll) (rf $ branch x tlr tr)
 
     -- Zig right
-    go pre lf rf (Branch _ x tl
-                  (Branch _ xr trl trr))
+    go pre lf rf (Branch _ x tl (Branch _ xr trl trr))
       | not (f $ pz <> ms trl) && f (pz <> ms trl <> ms xr) =
           branch xr (lf $ branch x tl trl) (rf trr)
       where pz = pre <> ms tl <> ms x
 
     -- Zig-Zig left
-    go pre lf rf (Branch _ x
-                  (Branch _ xl
-                   tll@(Branch _ xll tlll _) trl) tr)
-      | f (pre <> ms tlll <> ms xll) =
+    go pre lf rf (Branch _ x (Branch _ xl tll trl) tr)
+      | f (pre <> ms tll) =
           go pre lf (\hole -> rf $ branch xl hole $ branch x trl tr) tll
 
     -- Zig-Zig right
-    go pre lf rf (Branch _ x tl
-                  (Branch _ xr trl
-                   trr@(Branch _ xrr trrl _)))
-      | not (f pz) && f (pz <> ms trrl <> ms xrr) =
+    go pre lf rf (Branch _ x tl (Branch _ xr trl trr))
+      | not (f pz) =
           go pz (\hole -> lf $ branch xr (branch x tl trl) hole) rf trr
       where pz = pre <> ms tl <> ms x <> ms trl <> ms xr
 
     -- Zig-Zag left-right
-    go pre lf rf (Branch _ x
-                  (Branch _ xl tll
-                   tlr@(Branch _ xlr tlrl _))
-                  tr)
-      
-      | not (f pz) && f (pz <> ms tlrl <> ms xlr) =
+    go pre lf rf (Branch _ x (Branch _ xl tll tlr) tr)
+      | not (f pz) && f (pz <> ms tlr) =
           go pz (\hl -> lf $ branch xl tll hl)
                 (\hr -> rf $ branch x hr tr) tlr
       where pz = pre <> ms tll <> ms xl
 
     -- Zig-Zag right-left
-    go pre lf rf (Branch _ x tl
-                  (Branch _ xr
-                   trl@(Branch _ xrl trll _) trr))
-      | not (f pz) && f (pz <> ms trll <> ms xrl) =
+    go pre lf rf (Branch _ x tl (Branch _ xr trl trr))
+      | not (f pz) && f (pz <> ms trl) =
           go pz (\hl -> lf $ branch x tl hl)
                 (\hr -> rf $ branch xr hr trr) trl
       where pz = pre <> ms tl <> ms x
