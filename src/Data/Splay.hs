@@ -25,12 +25,19 @@ module Data.Splay
        , Measured(..)
        , singleton
        , split
+       , traverseSplay
        ) where
 
 import Control.Applicative
 import Data.Monoid ((<>))
+import Prelude
 
-import Data.Splay.Internal
+-- | A representation of a sequence of values of type @a@ using a splay
+--   tree, which can also contain measurements of type @s@.
+data Splay s a
+  = Leaf
+  | Branch !s a (Splay s a) (Splay s a)
+    -- ^ Invariant: @'s'@ is a valid cached measurement
 
 -- | @s@ is a measurement of @a@
 class Monoid s => Measured s a | a -> s where
@@ -44,7 +51,6 @@ instance Measured s a => Measured s (Splay s a) where
 -- | @'mappend'@ concatenates two sequences, and @'mempty'@ is the empty
 --   sequence.
 instance Measured s a => Monoid (Splay s a) where
-  mappend :: Measured s a => Splay s a -> Splay s a -> Splay s a
   Leaf `mappend` b = b
   a `mappend` Leaf = a
   a `mappend` b = case splayRightmost a of
