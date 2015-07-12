@@ -100,6 +100,6 @@ length :: Seq a -> Int
 length = getSize . S.measure . getSeq
 
 -- | @'splitAt' n s@ splits @s@ into the first @n@ elements and the rest.
---   If @n@ is less than the length of @s@, @(s, mempty)@ will be returned
+--   If @n@ is larger than the length of @s@, @(s, mempty)@ will be returned
 splitAt :: Int -> Seq a -> (Seq a, Seq a)
 splitAt n (Seq s) = case S.split (> Size n) s of (a, b) -> (Seq a, Seq b)
